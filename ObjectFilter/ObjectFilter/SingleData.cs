@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using Autodesk.Revit.UI;
+using Autodesk.Revit.DB;
 
 namespace ObjectFilter
 {
@@ -73,6 +74,7 @@ namespace ObjectFilter
             }
         }
 
+        public Document Doc { get; set; }
         public bool WindowOpen { get; set; }
         public RibbonPanel RibbonPanel { get; set; }
 

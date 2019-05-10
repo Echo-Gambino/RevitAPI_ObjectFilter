@@ -8,13 +8,25 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Autodesk.Revit.UI;
+using Autodesk.Revit.DB;
+using Autodesk.Revit.ApplicationServices;
+using Autodesk.Revit.Attributes;
+using Autodesk.Revit.UI.Selection;
+
 namespace ObjectFilter
 {
-    public partial class Form1 : Form
+    public partial class ObjectFilterForm : System.Windows.Forms.Form
     {
-        public Form1()
+        public ObjectFilterForm()
         {
             InitializeComponent();
+
+            Document doc = SingleData.Instance.Doc;
+            ElementId viewId = doc.ActiveView.Id;
+            PreviewControl preview = new PreviewControl(doc, viewId);
+            PreviewElementHost.Child = preview;
+
         }
 
         private void Form1_Load(object sender, EventArgs e)

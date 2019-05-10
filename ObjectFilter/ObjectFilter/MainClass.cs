@@ -84,11 +84,12 @@ namespace ObjectFilter
                 TaskDialog.Show("Debug", "panel is null!?!");
                 return Result.Failed;
             }
+            SingleData.Instance.Doc = revit.Application.ActiveUIDocument.Document;
 
             try
             {
                 System.Windows.Forms.Application.EnableVisualStyles();
-                System.Windows.Forms.Application.Run(new Form1());
+                System.Windows.Forms.Application.Run(new ObjectFilterForm());
             }
             catch (Exception e)
             {
