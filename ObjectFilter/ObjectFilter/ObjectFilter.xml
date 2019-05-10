@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<RevitAddIns>
+  <AddIn Type="Command">
+    <Assembly>C:\Users\Henry\Projects\RevitAPI_ObjectFilter\ObjectFilter\ObjectFilter\bin\Debug\ObjectFilter.dll</Assembly>
+    <AddInId>6E178D5A-CC53-48BA-90BD-4F6B91649F92</AddInId>
+    <FullClassName>ObjectFilter.MainClass</FullClassName>
+    <Text>ObjectFilter</Text>
+    <VendorId>Echo-Gambino</VendorId>
+    <VendorDescription>A programmer that makes stupid stuff</VendorDescription>
+  </AddIn>
+</RevitAddIns>
