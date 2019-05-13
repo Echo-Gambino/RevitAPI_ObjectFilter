@@ -167,76 +167,33 @@ namespace ObjectFilter
             buttonManager.EnableItem("ObjectFilter");
         }
 
-        private List<ElementId> Generate_ElementIdFromCategories(List<string> categories)
-        {
-            List<ElementId> output = new List<ElementId>();
-
-            Category eC = null;
-
-            foreach (string c in categories)
-            {
-                foreach (Element e in Elements)
-                {
-                    eC = e.Category;
-
-                    if (eC == null)
-                        continue;
-                    else if (c == eC.Name)
-                        output.Add(e.Id);
-                }
-            }
-
-            return output;
-        }
-
         private void CategoriesCheckedListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int result = CategoryInterface.Update(UIDoc, Elements);
-            switch (result)
+            // Update Category Interface
+            int catResult = CategoryInterface.Update(UIDoc, Elements);
+            switch (catResult)
             {
                 case 0:
                     FilterInterface.Disable();
-                    break;
+                    return;
                 case -1:
                     TaskDialog.Show("Error", "Error, Category interface failed");
-                    break;
+                    return;
                 default:
+                    FilterInterface.Enable();
                     break;
             }
 
-            /*
-            // Get checked categories
-            List<string> checkedCategories = CategoriesCheckedListBox.CheckedItems.OfType<string>().ToList();
+            List<ElementId> selElements = CategoryInterface.SelElements;
+            FilterInterface.UpdateList(selElements, UIDoc);
 
-            // Get the Collection of ElementIds and clear it
-            ICollection<ElementId> elIdCollection = UIDoc.Selection.GetElementIds();
-            elIdCollection.Clear();
 
-            // Premature exit conditions
-            if (checkedCategories == null)
-                return;
-            else if (checkedCategories.Count == 0)
-            {
-                // If nothing was checked...
-                UIDoc.Selection.SetElementIds(elIdCollection);
-                FilterComboBox.Enabled = false;
-                return;
-            }
+            return;
+        }
 
-            // Get all ElementIds that belongs to the given categories
-            SelElements = Generate_ElementIdFromCategories(checkedCategories);
-
-            // Add all selected elements to the element ids
-            foreach (ElementId eId in SelElements)
-                elIdCollection.Add(eId);
-
-            // Update the preview
-            UIDoc.Selection.SetElementIds(elIdCollection);
-            UIDoc.ShowElements(elIdCollection);
-
-            FilterComboBox.Enabled = true;
-            */
-
+        private void FilterComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            FilterInterface.SetupFilterByParameter();
             return;
         }
     }
@@ -322,23 +279,91 @@ namespace InterfaceSection
 
     public class Filter
     {
-        private System.Windows.Forms.ComboBox filterCB { get; set; } = null;
+        private System.Windows.Forms.ComboBox FilterCB { get; set; } = null;
+
+        private ParameterSet ParamSet { get; set; } = null;
 
         public Filter(System.Windows.Forms.ComboBox filterComboBox)
         {
-            this.filterCB = filterComboBox;
+            FilterCB = filterComboBox;
+            ParamSet = new ParameterSet();
             return;
+        }
+
+        private ParameterSet GetCommonParameters(List<ElementId> selElements, Document doc)
+        {
+            ParameterSet paramSet = new ParameterSet();
+
+            Element e = null;
+
+            bool first_time = true;
+
+            foreach (ElementId eId in selElements)
+            {
+                e = doc.GetElement(eId);
+                if (paramSet.IsEmpty && first_time)
+                {
+                    // If paramSet.IsEmpty and it is the first time it has entered the loop
+                    paramSet = e.Parameters;
+                    first_time = false;
+                }
+                else
+                {
+                    // If paramSet isn't empty or its no the first time it entered the loop
+                    IEnumerable<Parameter> LinqQuery
+                        = from Parameter p in e.Parameters
+                          where paramSet.Contains(p)
+                          select p;
+
+                    paramSet = new ParameterSet();
+
+                    foreach (Parameter p in LinqQuery)
+                        paramSet.Insert(p);
+                }
+            }
+
+            return paramSet;
         }
 
         public void Disable()
         {
-            filterCB.Enabled = false;
+            FilterCB.Enabled = false;
+
+            System.Windows.Forms.ComboBox.ObjectCollection filterCollection = FilterCB.Items;
+            filterCollection.Clear();
+
             return;
         }
 
         public void Enable()
         {
-            filterCB.Enabled = true;
+            FilterCB.Enabled = true;
+            return;
+        }
+
+        public void UpdateList(List<ElementId> selElements, UIDocument uidoc)
+        {
+            Document doc = uidoc.Document;
+
+            ParamSet = GetCommonParameters(selElements, doc);
+
+            System.Windows.Forms.ComboBox.ObjectCollection filterCollection = FilterCB.Items;
+            filterCollection.Clear();
+
+            foreach (Parameter p in ParamSet)
+            {
+                filterCollection.Add(p.Definition.Name);
+            }
+
+            return;
+        }
+
+        public void SetupFilterByParameter()
+        {
+            string x = FilterCB.SelectedValue.ToString();
+
+            TaskDialog.Show("Debug", x);
+
             return;
         }
 

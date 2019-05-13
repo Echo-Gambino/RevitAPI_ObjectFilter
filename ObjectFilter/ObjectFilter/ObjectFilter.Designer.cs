@@ -129,6 +129,7 @@
             this.FilterComboBox.Name = "FilterComboBox";
             this.FilterComboBox.Size = new System.Drawing.Size(210, 21);
             this.FilterComboBox.TabIndex = 5;
+            this.FilterComboBox.SelectedIndexChanged += new System.EventHandler(this.FilterComboBox_SelectedIndexChanged);
             // 
             // panel3
             // 
