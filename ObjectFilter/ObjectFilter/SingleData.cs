@@ -75,6 +75,7 @@ namespace ObjectFilter
         }
 
         public Document Doc { get; set; }
+        public UIDocument UIDoc { get; set; }
         public bool WindowOpen { get; set; }
         public RibbonPanel RibbonPanel { get; set; }
 

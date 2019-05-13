@@ -84,7 +84,8 @@ namespace ObjectFilter
                 TaskDialog.Show("Debug", "panel is null!?!");
                 return Result.Failed;
             }
-            SingleData.Instance.Doc = revit.Application.ActiveUIDocument.Document;
+            SingleData.Instance.UIDoc = revit.Application.ActiveUIDocument;
+            SingleData.Instance.Doc = SingleData.Instance.UIDoc.Document;
 
             try
             {
