@@ -95,7 +95,7 @@ namespace ObjectFilter
             catch (Exception e)
             {
                 TaskDialog.Show("Error", e.ToString());
-                if (!buttonManager.DisableItem("ObjectFilter"))
+                if (!buttonManager.EnableItem("ObjectFilter"))
                     TaskDialog.Show("Fatal", "Cannot Re-Enable Filter");
                 return Result.Failed;
             }

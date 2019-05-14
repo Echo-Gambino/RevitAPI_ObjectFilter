@@ -57,6 +57,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdvancedFilterControl.cs" />
     <Compile Include="SingleData.cs" />
     <Compile Include="ObjectFilter.cs">
       <SubType>Form</SubType>

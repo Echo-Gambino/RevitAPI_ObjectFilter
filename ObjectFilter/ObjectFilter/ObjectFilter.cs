@@ -38,28 +38,6 @@ namespace ObjectFilter
         public ObjectFilterForm()
         {
             InitializeComponent();
-
-            /*
-            // Get items into the CheckedListBox
-            List<Object> items = new List<Object>();
-
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append("");
-            foreach (Element e in Elements)
-            {
-                Category c = e.Category;
-
-                String s = "null";
-                if (c != null)
-                    s = c.Name; 
-
-                sb.Append("\n> " + s);
-            }
-
-            TaskDialog.Show("Debug", "ItemList:" + sb.ToString());
-            */
-
         }
 
         /// <summary>
@@ -80,6 +58,7 @@ namespace ObjectFilter
                 Elements = new List<Element>();
 
             SelElements = new List<ElementId>();
+
 
             return;
         }
@@ -147,9 +126,16 @@ namespace ObjectFilter
 
             CategoryInterface = new InterfaceSection.Category(CategoriesCheckedListBox);
 
-            FilterInterface = new InterfaceSection.Filter(FilterComboBox);
+            FilterInterface = new InterfaceSection.Filter(FilterComboBox, FilterPanel);
 
             NewValInterface = new InterfaceSection.NewVal();
+
+
+
+            NumericFilterPanel.Visible = false;
+            BinaryFilterPanel.Visible = false;
+            TextFilterPanel.Visible = false;
+            ImageFilterPanel.Visible = false;
 
             return;
         }
@@ -193,8 +179,23 @@ namespace ObjectFilter
 
         private void FilterComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            FilterInterface.SetupFilterByParameter();
+
+            string parameterType = FilterInterface.GetParameterType();
+
+            switch (parameterType)
+            {
+                case "YesNo":
+                    break;
+                default:
+                    break;
+            }
+
             return;
+        }
+
+        private void FilterPanel_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
@@ -281,12 +282,19 @@ namespace InterfaceSection
     {
         private System.Windows.Forms.ComboBox FilterCB { get; set; } = null;
 
+        private AdvancedFilterControl.BinaryUI BinaryUI { get; set; } = null;
+
         private ParameterSet ParamSet { get; set; } = null;
 
-        public Filter(System.Windows.Forms.ComboBox filterComboBox)
+        public Filter(System.Windows.Forms.ComboBox filterComboBox, System.Windows.Forms.Panel panel)
         {
             FilterCB = filterComboBox;
             ParamSet = new ParameterSet();
+
+            if (BinaryUI == null)
+                BinaryUI = new AdvancedFilterControl.BinaryUI(panel);
+            BinaryUI.Halt();
+
             return;
         }
 
@@ -358,13 +366,46 @@ namespace InterfaceSection
             return;
         }
 
-        public void SetupFilterByParameter()
+        private Parameter GetSelectedParameter()
         {
-            string x = FilterCB.SelectedValue.ToString();
+            int x = 0;
 
-            TaskDialog.Show("Debug", x);
+            try
+            {
+                x = FilterCB.SelectedIndex;
+            }
+            catch (Exception ex)
+            {
+                TaskDialog.Show("Error: " + ex.GetType().ToString(), ex.Message);
+                return null;
+            }
 
-            return;
+            string parameterName = FilterCB.Items[x].ToString();
+
+            Parameter parameter = null;
+
+            foreach (Parameter p in ParamSet)
+            {
+                if (p.Definition.Name == parameterName)
+                {
+                    parameter = p;
+                    break;
+                }
+            }
+
+            return parameter;
+        }
+
+        public string GetParameterType()
+        {
+            // Get parameter from ParamSet
+            Parameter parameter = GetSelectedParameter();
+
+            if (parameter == null) return "";
+
+            ParameterType pType = parameter.Definition.ParameterType;
+
+            return pType.ToString();
         }
 
     }
@@ -377,3 +418,118 @@ namespace InterfaceSection
         }
     }
 }
+
+/*
+namespace AdvancedFilterControl
+{
+    public class NumericalUI
+    {
+
+    }
+
+    public class BinaryUI
+    {
+        private System.Windows.Forms.Panel SubPanel = null;
+        private System.Windows.Forms.ComboBox BinaryComboBox = null;
+
+        public BinaryUI(System.Windows.Forms.Panel panel)
+        {
+            if (SubPanel != null && BinaryComboBox != null) return;
+
+            // Generate SubPanel
+            SubPanel = GenerateSubPanel(panel);
+
+            // Generate ComboBox
+            BinaryComboBox = GenerateComboBox(SubPanel);
+
+            // Generate EventHandlers
+            BinaryComboBox.SelectedIndexChanged += new EventHandler(BinaryDropDown_SelectedIndexChanged);
+        }
+
+        private System.Windows.Forms.ComboBox GenerateComboBox(System.Windows.Forms.Panel panel)
+        {
+            // Create an instance of subPanel
+            System.Windows.Forms.ComboBox bCombo = new System.Windows.Forms.ComboBox();
+
+            // Place the subPanel inside the panel
+            panel.Controls.Add(bCombo);
+
+            // Change the settings of the element thats not related to sizing and anchoring in relation to the panel
+            bCombo.DropDownStyle = ComboBoxStyle.DropDownList;
+
+            // Add True / False items to binary combo box
+            System.Windows.Forms.ComboBox.ObjectCollection items = bCombo.Items;
+            items.Add("True");
+            items.Add("False");
+
+            // Change the sizing of the element to fit the panel
+            int guestSizeX = panel.Size.Width - bCombo.Margin.Horizontal - 2;
+            int guestSizeY = panel.Size.Height - (panel.Size.Height / 4);
+            bCombo.Size = new Size(guestSizeX, guestSizeY);
+
+            // Change the location of the element to align with the panel
+            int guestLocX = bCombo.Margin.Left;
+            int guestLocY = bCombo.Margin.Top;
+            bCombo.Location = new System.Drawing.Point(guestLocX, guestLocY);
+
+            // Set the element's anchor correctly
+            bCombo.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right);
+
+            return bCombo;
+        }
+
+        private System.Windows.Forms.Panel GenerateSubPanel(System.Windows.Forms.Panel panel)
+        {
+            // Create an instance of subPanel
+            System.Windows.Forms.Panel subPanel = new System.Windows.Forms.Panel();
+
+            // Place the subPanel inside the panel
+            panel.Controls.Add(subPanel);
+
+            // Change the settings thats not related to sizing and anchoring in relation to the panel
+            subPanel.BorderStyle = BorderStyle.FixedSingle;
+            
+            // Change the sizing of subPanel to fit panel
+            int guestSizeX = panel.Size.Width - subPanel.Margin.Horizontal;
+            int guestSizeY = panel.Size.Height - (panel.Size.Height / 4);
+            subPanel.Size = new Size(guestSizeX, guestSizeY);
+
+            // Change the location of the subPanel to align with panel
+            int guestLocX = subPanel.Margin.Left;
+            int guestLocY = panel.Size.Height / 4;
+            subPanel.Location = new System.Drawing.Point(guestLocX, guestLocY);
+
+            // Set the element's anchor correctly
+            subPanel.Anchor = (AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right);
+
+            return subPanel;
+        }
+
+        private void BinaryDropDown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            TaskDialog.Show("Debug", "Update element selection!");
+
+            return;
+        }
+
+
+    }
+
+    public class TextUI
+    {
+
+    }
+
+    public class ImageUI
+    {
+
+    }
+
+    public class InvalidUI
+    {
+
+    }
+
+}
+*/
