@@ -35,6 +35,8 @@ namespace ObjectFilter
 
         private InterfaceSection.NewVal NewValInterface { get; set; } = null;
 
+        private System.Windows.Forms.Panel ActiveFilterSubPanel { get; set; } = null;
+
         public ObjectFilterForm()
         {
             InitializeComponent();
@@ -131,11 +133,27 @@ namespace ObjectFilter
             NewValInterface = new InterfaceSection.NewVal();
 
 
+            // Resize and Relocate FilterPanel
+            Size s = FilterPanel.Size;
+            System.Drawing.Point l = FilterPanel.Location;
+            s.Height = 200;
+            l.Y = 355;
+            FilterPanel.Size = s;
+            FilterPanel.Location = l;
 
+            // Set all FilterSubPanels to be not visible
             NumericFilterPanel.Visible = false;
             BinaryFilterPanel.Visible = false;
             TextFilterPanel.Visible = false;
             ImageFilterPanel.Visible = false;
+
+            System.Drawing.Point defaultLoc = new System.Drawing.Point(4, 50);
+
+            // Set all FilterSubPanels to be the same location
+            NumericFilterPanel.Location = defaultLoc;
+            BinaryFilterPanel.Location = defaultLoc;
+            TextFilterPanel.Location = defaultLoc;
+            ImageFilterPanel.Location = defaultLoc;
 
             return;
         }
@@ -182,13 +200,21 @@ namespace ObjectFilter
 
             string parameterType = FilterInterface.GetParameterType();
 
+            if (ActiveFilterSubPanel != null)
+                ActiveFilterSubPanel.Visible = false;
+
             switch (parameterType)
             {
                 case "YesNo":
+                    ActiveFilterSubPanel = BinaryFilterPanel;
                     break;
                 default:
+                    ActiveFilterSubPanel = null;
                     break;
             }
+
+            if (ActiveFilterSubPanel != null)
+                ActiveFilterSubPanel.Visible = true;
 
             return;
         }
