@@ -58,6 +58,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdvancedFilterControl.cs" />
+    <Compile Include="FilterSection.cs" />
+    <Compile Include="InterfaceSection.cs" />
     <Compile Include="SingleData.cs" />
     <Compile Include="ObjectFilter.cs">
       <SubType>Form</SubType>

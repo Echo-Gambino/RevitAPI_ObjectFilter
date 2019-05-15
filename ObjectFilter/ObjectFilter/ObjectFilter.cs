@@ -37,6 +37,9 @@ namespace ObjectFilter
 
         private System.Windows.Forms.Panel ActiveFilterSubPanel { get; set; } = null;
 
+        private FilterSection.MainSection FilterGUI { get; set; } = null;
+        private IDictionary<string, FilterSection.TemplateSection> SubFilterGUI { get; set; } = null;
+        
         public ObjectFilterForm()
         {
             InitializeComponent();
@@ -114,6 +117,47 @@ namespace ObjectFilter
 
         }
 
+        private void Initialize_FilterSubGUI()
+        {
+            // Initialize arguments in the form of lists for numericSection
+            List<System.Windows.Forms.Label> numericLB
+                = new List<System.Windows.Forms.Label>() { NumericFilterLabel };
+            List<System.Windows.Forms.TextBox> numericTB 
+                = new List<System.Windows.Forms.TextBox>() { ExactNumTextBox, LesserThanTextBox, GreaterThanTextBox };
+            List<System.Windows.Forms.ComboBox> numericCB 
+                = new List<System.Windows.Forms.ComboBox>() { LesserThanComboBox, GreaterThanComboBox };
+
+            // Initialize an argument in the form of lists for textSection
+            List<System.Windows.Forms.TextBox> textTB
+                = new List<System.Windows.Forms.TextBox>() { MainWordTextBox, IncludeTextBox, ExcludeTextBox };
+
+            // Initialize the Sections
+            FilterSection.TemplateSection numericSection
+                = new FilterSection.NumericSection(NumericFilterPanel, numericLB, numericTB, numericCB);
+            FilterSection.TemplateSection binarySection 
+                = new FilterSection.BinarySection(BinaryFilterPanel, BinaryComboBox);
+            FilterSection.TemplateSection textSection 
+                = new FilterSection.TextSection(TextFilterPanel, textTB);
+            FilterSection.TemplateSection imageSection 
+                = new FilterSection.ImageSection(ImageFilterPanel, ImagePathTextBox, ImageBrowseButton);
+            FilterSection.TemplateSection invalidSection 
+                = new FilterSection.InvalidSection(InvalidFilterPanel, InvalidLabel);
+
+            // Put the local variables that are initialized into a dictionary
+            SubFilterGUI = new Dictionary<string, FilterSection.TemplateSection>()
+            {
+                {"YesNo", binarySection},
+                {"Length", numericSection},
+                {"Area", numericSection},
+                {"Volume", numericSection},
+                {"Text", textSection},
+                {"Image", imageSection},
+                {"Invalid", invalidSection}
+            };
+
+            return;
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
             SingleData.Instance.WindowOpen = true;
@@ -132,28 +176,15 @@ namespace ObjectFilter
 
             NewValInterface = new InterfaceSection.NewVal();
 
+            FilterGUI = new FilterSection.MainSection(FilterPanel, FilterComboBox, FilterSearchButton, FilterResetButton);
 
-            // Resize and Relocate FilterPanel
-            Size s = FilterPanel.Size;
-            System.Drawing.Point l = FilterPanel.Location;
-            s.Height = 200;
-            l.Y = 355;
-            FilterPanel.Size = s;
-            FilterPanel.Location = l;
+            FilterGUI.Setup();
 
-            // Set all FilterSubPanels to be not visible
-            NumericFilterPanel.Visible = false;
-            BinaryFilterPanel.Visible = false;
-            TextFilterPanel.Visible = false;
-            ImageFilterPanel.Visible = false;
+            Initialize_FilterSubGUI();
 
-            System.Drawing.Point defaultLoc = new System.Drawing.Point(4, 50);
+            Setup_FilterMainPanel();
 
-            // Set all FilterSubPanels to be the same location
-            NumericFilterPanel.Location = defaultLoc;
-            BinaryFilterPanel.Location = defaultLoc;
-            TextFilterPanel.Location = defaultLoc;
-            ImageFilterPanel.Location = defaultLoc;
+            Setup_FilterSubPanels();
 
             return;
         }
@@ -171,6 +202,49 @@ namespace ObjectFilter
             buttonManager.EnableItem("ObjectFilter");
         }
 
+        private void Setup_FilterMainPanel()
+        {
+            // Resize and Relocate FilterPanel
+            Size s = FilterPanel.Size;
+            System.Drawing.Point l = FilterPanel.Location;
+            s.Height = 200;
+            l.Y = 355;
+            FilterPanel.Size = s;
+            FilterPanel.Location = l;
+
+            return;
+        }
+
+        private void Setup_FilterSubPanels()
+        {
+            // Set all FilterSubPanels to be not visible
+            NumericFilterPanel.Visible = false;
+            BinaryFilterPanel.Visible = false;
+            TextFilterPanel.Visible = false;
+            ImageFilterPanel.Visible = false;
+            InvalidFilterPanel.Visible = false;
+
+            System.Drawing.Point defaultLoc = new System.Drawing.Point(4, 50);
+
+            // Set all FilterSubPanels to be the same location
+            NumericFilterPanel.Location = defaultLoc;
+            BinaryFilterPanel.Location = defaultLoc;
+            TextFilterPanel.Location = defaultLoc;
+            ImageFilterPanel.Location = defaultLoc;
+            InvalidFilterPanel.Location = defaultLoc;
+
+            return;
+        }
+
+        private void Setup_FilterButtons()
+        {
+            FilterSearchButton.Enabled = false;
+
+            FilterResetButton.Enabled = false;       
+
+            return;
+        }
+
         private void CategoriesCheckedListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Update Category Interface
@@ -178,13 +252,15 @@ namespace ObjectFilter
             switch (catResult)
             {
                 case 0:
-                    FilterInterface.Disable();
+                    // FilterInterface.Disable();
+                    FilterGUI.Disable();
                     return;
                 case -1:
-                    TaskDialog.Show("Error", "Error, Category interface failed");
+                    MessageBox.Show("Error, Category interface failed", "Error");
                     return;
                 default:
-                    FilterInterface.Enable();
+                    // FilterInterface.Enable();
+                    FilterGUI.Enable();
                     break;
             }
 
@@ -197,27 +273,33 @@ namespace ObjectFilter
 
         private void FilterComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-
             string parameterType = FilterInterface.GetParameterType();
 
+            if (FilterGUI.SubSection != null)
+                FilterGUI.SubSection.Hide();
+            /*
             if (ActiveFilterSubPanel != null)
                 ActiveFilterSubPanel.Visible = false;
-
-            switch (parameterType)
+            */
+            if (SubFilterGUI.ContainsKey(parameterType))
             {
-                case "YesNo":
-                    ActiveFilterSubPanel = BinaryFilterPanel;
-                    break;
-                default:
-                    ActiveFilterSubPanel = null;
-                    break;
+                FilterGUI.SubSection = SubFilterGUI[parameterType];
+            }
+            else
+            {
+                FilterGUI.SubSection = null;
             }
 
+            // FilterGUI.Setup();
+            FilterGUI.Update();
+            /*
             if (ActiveFilterSubPanel != null)
                 ActiveFilterSubPanel.Visible = true;
-
+            */
             return;
         }
+
+
 
         private void FilterPanel_Paint(object sender, PaintEventArgs e)
         {
@@ -225,7 +307,7 @@ namespace ObjectFilter
         }
     }
 }
-
+/*
 namespace InterfaceSection
 {
     public class Category
@@ -444,7 +526,7 @@ namespace InterfaceSection
         }
     }
 }
-
+*/
 /*
 namespace AdvancedFilterControl
 {

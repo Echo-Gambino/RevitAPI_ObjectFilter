@@ -36,7 +36,7 @@
             this.CategoriesPanel = new System.Windows.Forms.Panel();
             this.FilterPanel = new System.Windows.Forms.Panel();
             this.ImageFilterPanel = new System.Windows.Forms.Panel();
-            this.BrowseButton = new System.Windows.Forms.Button();
+            this.ImageBrowseButton = new System.Windows.Forms.Button();
             this.ImagePathTextBox = new System.Windows.Forms.TextBox();
             this.SearchByImageLabel = new System.Windows.Forms.Label();
             this.TextFilterPanel = new System.Windows.Forms.Panel();
@@ -57,6 +57,10 @@
             this.NumericFilterLabel = new System.Windows.Forms.Label();
             this.FilterComboBox = new System.Windows.Forms.ComboBox();
             this.ValuePanel = new System.Windows.Forms.Panel();
+            this.InvalidFilterPanel = new System.Windows.Forms.Panel();
+            this.InvalidLabel = new System.Windows.Forms.Label();
+            this.FilterSearchButton = new System.Windows.Forms.Button();
+            this.FilterResetButton = new System.Windows.Forms.Button();
             this.CategoriesPanel.SuspendLayout();
             this.FilterPanel.SuspendLayout();
             this.ImageFilterPanel.SuspendLayout();
@@ -64,6 +68,7 @@
             this.BinaryFilterPanel.SuspendLayout();
             this.NumericFilterPanel.SuspendLayout();
             this.ValuePanel.SuspendLayout();
+            this.InvalidFilterPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // PreviewElementHost
@@ -138,17 +143,20 @@
             // 
             this.FilterPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.FilterPanel.Controls.Add(this.FilterResetButton);
+            this.FilterPanel.Controls.Add(this.FilterSearchButton);
+            this.FilterPanel.Controls.Add(this.InvalidFilterPanel);
             this.FilterPanel.Controls.Add(this.ImageFilterPanel);
             this.FilterPanel.Controls.Add(this.TextFilterPanel);
             this.FilterPanel.Controls.Add(this.BinaryFilterPanel);
             this.FilterPanel.Controls.Add(this.NumericFilterPanel);
             this.FilterPanel.Controls.Add(this.FilterComboBox);
             this.FilterPanel.Controls.Add(this.FiltersLabel);
-            this.FilterPanel.Location = new System.Drawing.Point(240, 181);
+            this.FilterPanel.Location = new System.Drawing.Point(240, 99);
             this.FilterPanel.MaximumSize = new System.Drawing.Size(1000000000, 500);
             this.FilterPanel.MinimumSize = new System.Drawing.Size(200, 200);
             this.FilterPanel.Name = "FilterPanel";
-            this.FilterPanel.Size = new System.Drawing.Size(217, 374);
+            this.FilterPanel.Size = new System.Drawing.Size(217, 456);
             this.FilterPanel.TabIndex = 8;
             this.FilterPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.FilterPanel_Paint);
             // 
@@ -156,8 +164,7 @@
             // 
             this.ImageFilterPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.ImageFilterPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ImageFilterPanel.Controls.Add(this.BrowseButton);
+            this.ImageFilterPanel.Controls.Add(this.ImageBrowseButton);
             this.ImageFilterPanel.Controls.Add(this.ImagePathTextBox);
             this.ImageFilterPanel.Controls.Add(this.SearchByImageLabel);
             this.ImageFilterPanel.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -167,15 +174,15 @@
             this.ImageFilterPanel.TabIndex = 9;
             this.ImageFilterPanel.Visible = false;
             // 
-            // BrowseButton
+            // ImageBrowseButton
             // 
-            this.BrowseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BrowseButton.Location = new System.Drawing.Point(154, 19);
-            this.BrowseButton.Name = "BrowseButton";
-            this.BrowseButton.Size = new System.Drawing.Size(51, 23);
-            this.BrowseButton.TabIndex = 8;
-            this.BrowseButton.Text = "Browse";
-            this.BrowseButton.UseVisualStyleBackColor = true;
+            this.ImageBrowseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.ImageBrowseButton.Location = new System.Drawing.Point(156, 19);
+            this.ImageBrowseButton.Name = "ImageBrowseButton";
+            this.ImageBrowseButton.Size = new System.Drawing.Size(51, 23);
+            this.ImageBrowseButton.TabIndex = 8;
+            this.ImageBrowseButton.Text = "Browse";
+            this.ImageBrowseButton.UseVisualStyleBackColor = true;
             // 
             // ImagePathTextBox
             // 
@@ -185,7 +192,7 @@
             this.ImagePathTextBox.MinimumSize = new System.Drawing.Size(4, 23);
             this.ImagePathTextBox.Name = "ImagePathTextBox";
             this.ImagePathTextBox.ReadOnly = true;
-            this.ImagePathTextBox.Size = new System.Drawing.Size(146, 20);
+            this.ImagePathTextBox.Size = new System.Drawing.Size(148, 23);
             this.ImagePathTextBox.TabIndex = 7;
             // 
             // SearchByImageLabel
@@ -204,7 +211,6 @@
             // 
             this.TextFilterPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.TextFilterPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.TextFilterPanel.Controls.Add(this.ExcludeLabel);
             this.TextFilterPanel.Controls.Add(this.IncludeLabel);
             this.TextFilterPanel.Controls.Add(this.ExcludeTextBox);
@@ -247,7 +253,7 @@
             this.ExcludeTextBox.Location = new System.Drawing.Point(59, 54);
             this.ExcludeTextBox.MinimumSize = new System.Drawing.Size(4, 21);
             this.ExcludeTextBox.Name = "ExcludeTextBox";
-            this.ExcludeTextBox.Size = new System.Drawing.Size(146, 20);
+            this.ExcludeTextBox.Size = new System.Drawing.Size(148, 21);
             this.ExcludeTextBox.TabIndex = 8;
             // 
             // IncludeTextBox
@@ -257,7 +263,7 @@
             this.IncludeTextBox.Location = new System.Drawing.Point(59, 27);
             this.IncludeTextBox.MinimumSize = new System.Drawing.Size(4, 21);
             this.IncludeTextBox.Name = "IncludeTextBox";
-            this.IncludeTextBox.Size = new System.Drawing.Size(146, 20);
+            this.IncludeTextBox.Size = new System.Drawing.Size(148, 21);
             this.IncludeTextBox.TabIndex = 7;
             // 
             // MainWordTextBox
@@ -266,7 +272,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.MainWordTextBox.Location = new System.Drawing.Point(59, 1);
             this.MainWordTextBox.Name = "MainWordTextBox";
-            this.MainWordTextBox.Size = new System.Drawing.Size(146, 20);
+            this.MainWordTextBox.Size = new System.Drawing.Size(148, 20);
             this.MainWordTextBox.TabIndex = 6;
             // 
             // MainWordLabel
@@ -284,7 +290,6 @@
             // 
             this.BinaryFilterPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.BinaryFilterPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.BinaryFilterPanel.Controls.Add(this.BinaryComboBox);
             this.BinaryFilterPanel.ForeColor = System.Drawing.SystemColors.ControlText;
             this.BinaryFilterPanel.Location = new System.Drawing.Point(4, 137);
@@ -297,17 +302,20 @@
             // 
             this.BinaryComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.BinaryComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.BinaryComboBox.FormattingEnabled = true;
+            this.BinaryComboBox.Items.AddRange(new object[] {
+            "True",
+            "False"});
             this.BinaryComboBox.Location = new System.Drawing.Point(3, 3);
             this.BinaryComboBox.Name = "BinaryComboBox";
-            this.BinaryComboBox.Size = new System.Drawing.Size(202, 21);
+            this.BinaryComboBox.Size = new System.Drawing.Size(204, 21);
             this.BinaryComboBox.TabIndex = 0;
             // 
             // NumericFilterPanel
             // 
             this.NumericFilterPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.NumericFilterPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.NumericFilterPanel.Controls.Add(this.GreaterThanTextBox);
             this.NumericFilterPanel.Controls.Add(this.LesserThanTextBox);
             this.NumericFilterPanel.Controls.Add(this.ExactNumTextBox);
@@ -328,7 +336,7 @@
             this.GreaterThanTextBox.Location = new System.Drawing.Point(49, 54);
             this.GreaterThanTextBox.MinimumSize = new System.Drawing.Size(4, 21);
             this.GreaterThanTextBox.Name = "GreaterThanTextBox";
-            this.GreaterThanTextBox.Size = new System.Drawing.Size(156, 20);
+            this.GreaterThanTextBox.Size = new System.Drawing.Size(158, 21);
             this.GreaterThanTextBox.TabIndex = 8;
             // 
             // LesserThanTextBox
@@ -338,7 +346,7 @@
             this.LesserThanTextBox.Location = new System.Drawing.Point(49, 27);
             this.LesserThanTextBox.MinimumSize = new System.Drawing.Size(4, 21);
             this.LesserThanTextBox.Name = "LesserThanTextBox";
-            this.LesserThanTextBox.Size = new System.Drawing.Size(156, 20);
+            this.LesserThanTextBox.Size = new System.Drawing.Size(158, 21);
             this.LesserThanTextBox.TabIndex = 7;
             // 
             // ExactNumTextBox
@@ -347,7 +355,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ExactNumTextBox.Location = new System.Drawing.Point(86, 1);
             this.ExactNumTextBox.Name = "ExactNumTextBox";
-            this.ExactNumTextBox.Size = new System.Drawing.Size(119, 20);
+            this.ExactNumTextBox.Size = new System.Drawing.Size(121, 20);
             this.ExactNumTextBox.TabIndex = 6;
             // 
             // GreaterThanComboBox
@@ -408,6 +416,45 @@
             this.ValuePanel.Size = new System.Drawing.Size(209, 200);
             this.ValuePanel.TabIndex = 9;
             // 
+            // InvalidFilterPanel
+            // 
+            this.InvalidFilterPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.InvalidFilterPanel.Controls.Add(this.InvalidLabel);
+            this.InvalidFilterPanel.Location = new System.Drawing.Point(3, 314);
+            this.InvalidFilterPanel.Name = "InvalidFilterPanel";
+            this.InvalidFilterPanel.Size = new System.Drawing.Size(210, 68);
+            this.InvalidFilterPanel.TabIndex = 10;
+            // 
+            // InvalidLabel
+            // 
+            this.InvalidLabel.AutoSize = true;
+            this.InvalidLabel.Location = new System.Drawing.Point(4, 4);
+            this.InvalidLabel.Name = "InvalidLabel";
+            this.InvalidLabel.Size = new System.Drawing.Size(64, 13);
+            this.InvalidLabel.TabIndex = 0;
+            this.InvalidLabel.Text = "Invalid: N/A";
+            // 
+            // FilterSearchButton
+            // 
+            this.FilterSearchButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.FilterSearchButton.Location = new System.Drawing.Point(3, 401);
+            this.FilterSearchButton.Name = "FilterSearchButton";
+            this.FilterSearchButton.Size = new System.Drawing.Size(211, 23);
+            this.FilterSearchButton.TabIndex = 11;
+            this.FilterSearchButton.Text = "Search";
+            this.FilterSearchButton.UseVisualStyleBackColor = true;
+            // 
+            // FilterResetButton
+            // 
+            this.FilterResetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.FilterResetButton.Location = new System.Drawing.Point(3, 430);
+            this.FilterResetButton.Name = "FilterResetButton";
+            this.FilterResetButton.Size = new System.Drawing.Size(211, 23);
+            this.FilterResetButton.TabIndex = 12;
+            this.FilterResetButton.Text = "Reset";
+            this.FilterResetButton.UseVisualStyleBackColor = true;
+            // 
             // ObjectFilterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -435,6 +482,8 @@
             this.NumericFilterPanel.PerformLayout();
             this.ValuePanel.ResumeLayout(false);
             this.ValuePanel.PerformLayout();
+            this.InvalidFilterPanel.ResumeLayout(false);
+            this.InvalidFilterPanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -466,8 +515,12 @@
         private System.Windows.Forms.Panel BinaryFilterPanel;
         private System.Windows.Forms.ComboBox BinaryComboBox;
         private System.Windows.Forms.Panel ImageFilterPanel;
-        private System.Windows.Forms.Button BrowseButton;
+        private System.Windows.Forms.Button ImageBrowseButton;
         private System.Windows.Forms.TextBox ImagePathTextBox;
         private System.Windows.Forms.Label SearchByImageLabel;
+        private System.Windows.Forms.Panel InvalidFilterPanel;
+        private System.Windows.Forms.Label InvalidLabel;
+        private System.Windows.Forms.Button FilterResetButton;
+        private System.Windows.Forms.Button FilterSearchButton;
     }
 }
